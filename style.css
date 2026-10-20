@@ -3,7 +3,7 @@
    =================================== */
 :root {
   --accent: #f66;
-  --accent-dim: rgba(255, 102, 102, 0.12);
+  --accent-dim: #ffecec;
   --accent-dark: #d94444;
 
   --legendary-bg: #e2fdd2;
@@ -92,6 +92,12 @@ span.dec {
 
 span.decint {
   padding-right: 1.5px;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
 }
 
 /* ===================================
@@ -511,7 +517,7 @@ span.decint {
   border: 1.5px solid var(--border-light);
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
-  text-align: center;
+  text-align: right;
   outline: none;
   font-family: var(--font-main);
   background: var(--bg-white);
@@ -610,8 +616,9 @@ span.decint {
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
-  min-height: 30px;
+  min-height: 32px;
 }
 
 .ability-row>.cell:last-child {
