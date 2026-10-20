@@ -461,7 +461,7 @@ input[type="number"] {
   overflow: hidden;
 
   border-radius: var(--radius-sm);
-  border: 1.5px solid var(--accent-dim);
+  border: 2px solid var(--accent-dim);
   transition: border-color 0.2s;
 }
 
