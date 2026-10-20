@@ -671,8 +671,8 @@ function renderModalBody() {
           <tr>
             <th style="width: 60px">数値</th>
             <th style="width: 120px">オプション内確率</span></th>
-            <th>1行目につく確率<span>${subLabel}</span></th>
-            <th>2,3行目につく確率<span>${subLabel}</span></th>
+            <th>1行目<span>${subLabel}</span></th>
+            <th>2,3行目<span>${subLabel}</span></th>
           </tr>
         </thead>
         <tbody>
