@@ -457,7 +457,7 @@ input[type="number"] {
 .toggle-wrap {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   overflow: hidden;
 
   border-radius: var(--radius-sm);
