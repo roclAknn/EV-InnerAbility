@@ -913,7 +913,6 @@ input[type="number"] {
 
 .modal-sel-name-text {
   font-weight: 600;
-  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1013,8 +1012,11 @@ input[type="number"] {
 
 .modal-cs-option.active {
   background: var(--accent-dim);
-  color: var(--accent-dark);
+  color: var(--accent-dark) !important;
   font-weight: 700;
+}
+.modal-cs-option:not(.first) {
+   color: var(--text-muted);
 }
 
 /* 3. 確率表示切り替え（1行） */
