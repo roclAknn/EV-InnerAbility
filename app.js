@@ -570,10 +570,11 @@ function renderModalSelector(rows, activeAbilityId, activeGrade) {
       dropdown.appendChild(group);
     }
 
+    const isFirst = group.children.length === 0;
     const opt = document.createElement('button');
     const isActive = (item.abilityId === activeAbilityId && item.grade === activeGrade);
     opt.type = 'button';
-    opt.className = `cs-option modal-cs-option${isActive ? ' active' : ''}`;
+    opt.className = `cs-option modal-cs-option${isActive ? ' active' : ''}${isFirst ? ' first' : ''}`;
     opt.dataset.abilityId = item.abilityId;
     opt.dataset.grade = item.grade;
 
