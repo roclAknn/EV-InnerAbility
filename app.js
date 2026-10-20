@@ -550,9 +550,9 @@ function renderModalSelector(rows, activeAbilityId, activeGrade) {
     dropdown.classList.toggle('open', willOpen);
     btn.classList.toggle('open', willOpen);
     if (willOpen) {
-      const activeOpt = dropdown.querySelector('.modal-cs-option.active');
-      if (activeOpt) {
-        activeOpt.scrollIntoView({ block: 'nearest' });
+      const activeOptGroup = dropdown.querySelector('.modal-cs-option.active').parentElement;
+      if (activeOptGroup) {
+        activeOptGroup.scrollIntoView({ block: 'center' });
       }
     }
   });
