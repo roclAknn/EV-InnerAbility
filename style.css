@@ -1016,7 +1016,7 @@ input[type="number"] {
   font-weight: 700;
 }
 
-.modal-cs-option:not(.first):not(:hover) .modal-sel-name-text {
+.modal-cs-option:not(.first):not(:hover) {
   color: transparent;
 }
 
