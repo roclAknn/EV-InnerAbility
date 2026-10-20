@@ -1016,10 +1016,8 @@ input[type="number"] {
   font-weight: 700;
 }
 
-.modal-cs-option:not(.first) .modal-sel-name-text {
-  transform: scale(0.95);
-  transform-origin: 5em;
-  opacity: 0.8;
+.modal-cs-option:not(.first):not(:hover) .modal-sel-name-text {
+  color: transparent;
 }
 
 /* 3. 確率表示切り替え（1行） */
