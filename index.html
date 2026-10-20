@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>インナーアビリティ 確率ツール | MapleStory</title>
+  <meta name="description" content="メイプルストーリーのインナーアビリティの確率表を表示。期待値などを計算できるシミュレータ・ツールです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="/header.js"></script>
+  <script src="/lib/decimal.min.js"></script>
+  <script src="define_ability.js"></script>
+  <script src="app.js"></script>
+</head>
+
+<body>
+  <!-- ===== ページ本体 ===== -->
+  <main>
+    <div id="maindiv-wrapper">
+      <!-- ===== 基礎確率情報 コンテナ ===== -->
+      <section class=" summary-container" id="probSummaryContainer">
+        <!-- 昇級確率(%)の表 -->
+        <div class="summary-block" id="upgradeProbBlock">
+          <h2 class="summary-title">昇級確率</h2>
+          <div class="summary-table-wrap" id="upgradeProbTableWrap">
+            <!-- JSで自動生成 -->
+          </div>
+        </div>
+
+        <!-- オプション等級確率の表 -->
+        <div class="summary-block" id="optionGradeProbBlock">
+          <div class="summary-title-row">
+            <h2 class="summary-title">2, 3行目オプション等級確率</h2>
+            <span class="summary-sub">(1行目はベース等級確定)</span>
+          </div>
+          <div class="summary-table-wrap" id="optionGradeProbTableWrap">
+            <!-- JSで自動生成 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== インナーアビリティリスト コンテナ ===== -->
+      <section class="ia-container" id="iaContainer">
+
+        <!-- スティッキーコントロールバー -->
+        <div class="sticky-bar" id="stickyBar">
+          <div class="sticky-inner">
+            <div class="sticky-inner-line">
+
+              <!-- ベース等級 カスタムSELECT -->
+              <div class="control-group">
+                <label class="control-label">ベース等級</label>
+                <div class="custom-select-wrap" id="gradeSelectWrap">
+                  <button class="custom-select-btn" id="gradeSelectBtn" type="button">
+                    <img class="cs-icon" id="gradeSelectIcon" src="icon/rank-legendary.png" alt="">
+                    <span id="gradeSelectText">レジェンダリー</span>
+                    <span class="cs-arrow">▾</span>
+                  </button>
+                  <div class="custom-select-dropdown" id="gradeSelectDropdown">
+                    <button class="cs-option active" data-grade="レジェンダリー" type="button">
+                      <img src="icon/rank-legendary.png" class="cs-opt-icon" alt="">レジェンダリー
+                    </button>
+                    <button class="cs-option" data-grade="ユニーク" type="button">
+                      <img src="icon/rank-unique.png" class="cs-opt-icon" alt="">ユニーク
+                    </button>
+                    <button class="cs-option" data-grade="エピック" type="button">
+                      <img src="icon/rank-epic.png" class="cs-opt-icon" alt="">エピック
+                    </button>
+                    <button class="cs-option" data-grade="レア" type="button">
+                      <img src="icon/rank-rare.png" class="cs-opt-icon" alt="">レア
+                    </button>
+                    <button class="cs-option cs-option-advance" data-grade="アドバンスリセット" type="button">
+                      <img src="icon/rank-legendary.png" class="cs-opt-icon" alt="">アドバンスリセット
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 有用度フィルター -->
+              <div class="control-group">
+                <label class="control-label">絞り込み</label>
+                <label class="check-label">
+                  <input type="checkbox" id="usefulFilter">
+                  <span class="checkmark"></span>
+                  <span>有用のみ</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sticky-inner-line">
+              <div style="flex: 1;">
+                <span class="control-label">Tips：列をクリックすると数値ごとの確率を表示します。</span>
+              </div>
+              <!-- 確率表示切り替え -->
+              <div class="control-group">
+                <div class="toggle-wrap">
+                  <div class="param-input-group">
+                    <div class="param-input-wrap" id="paramNWrap">
+                      <input type="number" id="paramN" class="param-input" value="1" min="1" step="1">
+                      <span class="param-unit">回</span>
+                    </div>
+                    <div class="param-input-wrap hidden" id="paramPWrap">
+                      <input type="number" id="paramP" class="param-input" value="95" min="1" max="99" step="1">
+                      <span class="param-unit">%</span>
+                    </div>
+                  </div>
+                  <button class="display-toggle-btn" id="displayToggleBtn" title="クリックで切り替え">
+                    <span id="displayToggleLabel">で引く確率</span>
+                    <span class="toggle-arrow">⇄</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.sticky-inner -->
+        </div><!-- /.sticky-bar -->
+
+        <!-- リストヘッダー（スティッキー） -->
+        <div class="list-header" id="listHeader">
+          <div class="col-name">オプション名</div>
+          <div class="col-grade">等級</div>
+          <div class="col-range">数値範囲</div>
+          <div class="col-prob1">
+            <span>確率 (1行目)</span>
+            <span class="col-prob-sub" id="headerSub1"></span>
+          </div>
+          <div class="col-prob23">
+            <span>確率 (2,3行目)</span>
+            <span class="col-prob-sub" id="headerSub23"></span>
+          </div>
+        </div>
+
+        <!-- アビリティリスト -->
+        <div class="ability-list" id="abilityList">
+          <!-- JSで生成 -->
+        </div>
+
+      </section><!-- /.ia-container -->
+
+    </div><!-- /.page-body -->
+  </main>
+
+  <!-- ===== モダル ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox" role="dialog" aria-modal="true">
+
+      <button class="modal-close" id="modalClose" title="閉じる">✕</button>
+
+      <div class="modal-header">
+
+        <div class="modal-base-grade-wrap" id="modalBaseGradeWrap">
+          <span class="modal-label">ベース等級</span>
+          <span class="modal-base-grade-display" id="modalBaseGradeDisplay">
+            <span class="modal-base-grade-text" id="modalBaseGradeText">レジェンダリー</span>
+            <img class="cs-icon modal-base-grade-icon" id="modalBaseGradeIcon" src="icon/rank-legendary.png" alt="L">
+          </span>
+        </div>
+
+        <!-- オプション+等級 リスト風カスタムSELECT -->
+        <div class="modal-selector-wrap" id="modalSelectorWrap">
+          <!-- JSで生成 -->
+        </div>
+      </div><!-- /.modal-header -->
+
+      <div class="modal-body-wrap">
+        <!-- 表示切り替え -->
+        <div class="modal-toggle-wrap modal-toggle-line" style="justify-content: flex-end;">
+          <div class="toggle-wrap">
+            <div class="param-input-wrap" id="modalParamNWrap">
+              <input type="number" id="modalParamN" class="param-input" value="1" min="1" step="1">
+              <span class="param-unit">回</span>
+            </div>
+            <div class="param-input-wrap hidden" id="modalParamPWrap">
+              <input type="number" id="modalParamP" class="param-input" value="95" min="1" max="99" step="1">
+              <span class="param-unit">%</span>
+            </div>
+            <button class="display-toggle-btn" id="modalDisplayToggleBtn">
+              <span id="modalDisplayToggleLabel">で引く確率</span>
+              <span class="toggle-arrow">⇄</span>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- JSで生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== スクロールボタン ===== -->
+  <div class="scroll-buttons" id="scrollButtons">
+    <button class="scroll-btn" id="scrollTopBtn" title="トップへ">▲</button>
+    <button class="scroll-btn" id="scrollBottomBtn" title="ボトムへ">▼</button>
+  </div>
+
+</body>
+
+</html>

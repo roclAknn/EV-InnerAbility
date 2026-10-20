@@ -1,0 +1,1153 @@
+/* ===================================
+   CSS Variables & Reset
+   =================================== */
+:root {
+  --accent: #f66;
+  --accent-dim: rgba(255, 102, 102, 0.12);
+  --accent-dark: #d94444;
+
+  --legendary-bg: #e2fdd2;
+  --legendary-border: #7ed95a;
+  --legendary-text: #2a6b10;
+  --legendary-marker: #7ed95a;
+
+  --unique-bg: #feefce;
+  --unique-border: #f5c842;
+  --unique-text: #7a5a00;
+  --unique-marker: #f5c842;
+
+  --epic-bg: #f3d9fb;
+  --epic-border: #c46ee8;
+  --epic-text: #6a1a8a;
+  --epic-marker: #c46ee8;
+
+  --rare-bg: #daf0fe;
+  --rare-border: #5ab0e8;
+  --rare-text: #0a4a7a;
+  --rare-marker: #5ab0e8;
+
+  --other-bg: #f0f0f0;
+  --other-border: #bbb;
+  --other-text: #555;
+  --other-marker: #bbb;
+
+  --bg-page: #f4f5f7;
+  --bg-white: #ffffff;
+  --bg-row: #ffffff;
+  --bg-row-alt: #fafafa;
+  --text-primary: #1a1a2e;
+  --text-secondary: #555577;
+  --text-muted: #999;
+  --border-light: #e0e0e8;
+  --border-dark: #a0a0a8;
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.18);
+  --radius-sm: 5px;
+  --radius-md: 9px;
+  --radius-lg: 14px;
+
+  --header-h: 50px;
+  --sticky-h: 60px;
+
+  --list-grid-template: 1fr 50px 100px 120px 120px;
+
+  /* JSで動的更新: --sticky-actual-h */
+  --sticky-actual-h: 60px;
+  --listheader-h: 34px;
+
+  --font-main: 'Noto Sans JP', 'Inter', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 14px;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+main {
+  display: flex;
+  position: relative;
+}
+
+span.dec {
+  display: contents;
+  color: darkred !important;
+  zoom: 0.9;
+}
+
+span.decint {
+  padding-right: 1.5px;
+}
+
+/* ===================================
+   Page Body
+   =================================== */
+#maindiv-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: 0;
+  padding: 14px 16px 80px;
+}
+
+/* ===================================
+   Prob Summary Container
+   =================================== */
+.summary-container {
+  width: 100%;
+  max-width: 750px;
+  min-width: 550px;
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summary-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summary-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-title::before {
+  content: '✦';
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.summary-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.summary-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.summary-table thead tr {
+  background: #f7f7fa;
+  border-bottom: 1.5px solid var(--border-light);
+}
+
+.summary-table thead th {
+  padding: 8px 12px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  border-right: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.summary-table thead th:last-child {
+  border-right: none;
+}
+
+.summary-table tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background 0.12s;
+}
+
+.summary-table tbody tr:nth-child(even) {
+  background: var(--bg-row-alt);
+}
+
+.summary-table tbody tr:hover {
+  background: #fff5f5;
+}
+
+.summary-table tbody td {
+  padding: 7px 12px;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.summary-table tbody td:last-child {
+  border-right: none;
+}
+
+.summary-grade-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.summary-arrow {
+  color: var(--text-muted);
+  margin: 0 4px;
+  font-size: 0.8rem;
+}
+
+.summary-prob-val {
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ===================================
+   IA Container 
+   =================================== */
+.ia-container {
+  flex: 1;
+  max-width: 750px;
+  min-width: 550px;
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: visible;
+}
+
+/* ===================================
+   Sticky Bar
+   =================================== */
+.sticky-bar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+
+.sticky-inner {
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: var(--sticky-h);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.sticky-inner-line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.control-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* ===================================
+   Custom Grade SELECT
+   =================================== */
+.custom-select-wrap {
+  position: relative;
+}
+
+.custom-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-white);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: border-color 0.2s;
+  min-width: 148px;
+}
+
+.custom-select-btn:hover {
+  border-color: var(--accent);
+}
+
+.custom-select-btn.open {
+  border-color: var(--accent);
+}
+
+.cs-icon {
+  aspect-ratio: 1/1;
+  width: 14px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.cs-arrow {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.custom-select-btn.open .cs-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  min-width: 100%;
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.custom-select-dropdown.open {
+  display: block;
+}
+
+.cs-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-main);
+  text-align: left;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.cs-option:hover {
+  background: var(--accent-dim);
+}
+
+.cs-option.active {
+  background: var(--accent-dim);
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.cs-option-advance {
+  border-top: 1px dashed var(--border-dark);
+}
+
+.cs-opt-icon {
+  aspect-ratio: 1/1;
+  width: 14px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+/* ===================================
+   Useful Filter Checkbox
+   =================================== */
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.check-label:hover {
+  color: var(--text-primary);
+}
+
+.check-label input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--bg-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.check-label input:checked+.checkmark {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.check-label input:checked+.checkmark::after {
+  content: '✓';
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* ===================================
+   Display Toggle
+   =================================== */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--accent-dim);
+  transition: border-color 0.2s;
+}
+
+.toggle-wrap:hover {
+  border-color: var(--accent);
+}
+
+.param-input-wrap {
+  padding-right: 7px;
+}
+
+.display-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  color: var(--accent-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font-main);
+  border: 0;
+  background: var(--accent-dim);
+}
+
+.display-toggle-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.toggle-arrow {
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.param-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.param-input-wrap.hidden {
+  display: none;
+}
+
+.param-input {
+  width: 50px;
+  padding: 3px 5px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  text-align: center;
+  outline: none;
+  font-family: var(--font-main);
+  background: var(--bg-white);
+  color: var(--text-primary);
+  transition: border-color 0.2s;
+}
+
+.param-input:focus {
+  border-color: var(--accent);
+}
+
+.param-label,
+.param-unit {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+/* ===================================
+   List Header (sticky)
+   =================================== */
+.list-header {
+  display: grid;
+  grid-template-columns: var(--list-grid-template);
+  background: var(--accent);
+  text-align: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: var(--sticky-actual-h);
+  z-index: 80;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.list-header>div {
+  padding: 7px 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.list-header>div:last-child {
+  border-right: none;
+}
+
+.col-prob-sub {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* ===================================
+   Ability List
+   =================================== */
+.ability-list {
+  background: var(--bg-white);
+}
+
+/* Group */
+.ability-group {
+  border-bottom: 1.5px solid var(--border-light);
+  background-color: var(--bg-row);
+}
+
+.ability-group:nth-child(even) {
+  background-color: var(--bg-row-alt);
+}
+
+.ability-group:last-child {
+  border-bottom: none;
+}
+
+/* Row */
+.ability-row {
+  display: grid;
+  grid-template-columns: var(--list-grid-template);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.ability-row:last-child {
+  border-bottom: none;
+}
+
+.ability-row:hover {
+  background: #fff5f5;
+}
+
+/* Cell共通 */
+.ability-row>.cell {
+  padding: 5px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 30px;
+}
+
+.ability-row>.cell:last-child {
+  border-right: none;
+}
+
+/* 数値・確率セルのアンダーマーカー */
+.cell-range,
+.cell-prob1,
+.cell-prob23,
+.modal-sel-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* マーカーは span.marker でテキストの後ろに被せる（最低値全角1文字分） */
+.marked {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.2em;
+  line-height: 1.5;
+}
+
+.marked::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 4px;
+  border-radius: 3px;
+  opacity: 0.45;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 等級別マーカー色 */
+*[data-grade="レジェンダリー"] .marked::after {
+  background: var(--legendary-marker);
+}
+
+*[data-grade="ユニーク"] .marked::after {
+  background: var(--unique-marker);
+}
+
+*[data-grade="エピック"] .marked::after {
+  background: var(--epic-marker);
+}
+
+*[data-grade="レア"] .marked::after {
+  background: var(--rare-marker);
+}
+
+/* オプション名の短縮名切り替え */
+.name-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .name-full {
+    display: none;
+  }
+
+  .name-short {
+    display: inline;
+  }
+}
+
+/* 名前セル */
+.cell-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-name.empty-name {
+  visibility: hidden;
+}
+
+/* 等級セル（アイコンのみ） */
+.cell-grade {
+  justify-content: center;
+  padding: 5px 4px;
+}
+
+.row-grade-icon {
+  aspect-ratio: 1/1;
+  width: 14px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+/* 数値範囲セル */
+.cell-range {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* 確率セル */
+.cell-prob1,
+.cell-prob23 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.prob-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.prob-na {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* hidden */
+.ability-row.hidden-row {
+  display: none;
+}
+
+.ability-group.all-hidden {
+  display: none;
+}
+
+/* ===================================
+   Modal
+   =================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 30, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  min-height: min(300px, 95vh);
+  max-height: 95vh;
+  width: min(680px, 96vw);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  transform: scale(0.96) translateY(8px);
+  transition: transform 0.22s;
+}
+
+.modal-overlay.open .modal-box {
+  transform: scale(1) translateY(0);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 50%;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.18s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.modal-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fafafa;
+}
+
+.modal-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* モダル セクションラベル */
+.modal-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  min-width: 68px;
+  flex-shrink: 0;
+}
+
+/* 1. ベース等級表示 */
+.modal-base-grade-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-base-grade-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-base-grade-icon {
+  aspect-ratio: 1/1;
+  width: 14px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+/* 2. 独自UIのオプション選択肢（#gradeSelectBtnと同じ独自UIセレクト） */
+.modal-selector-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-custom-select-wrap {
+  position: relative;
+  width: min(300px, 100%);
+}
+
+.modal-select-group {
+  border-bottom: 1.5px solid var(--border-light);
+  background-color: var(--bg-row);
+}
+
+.modal-select-group:nth-child(even) {
+  background-color: var(--bg-row-alt);
+}
+
+.modal-select-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: border-color 0.2s;
+  text-align: left;
+}
+
+.modal-select-btn:hover,
+.modal-select-btn.open {
+  border-color: var(--accent);
+}
+
+.modal-sel-name-text {
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-sel-grade-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.modal-sel-grade-badge.grade-legendary {
+  background: var(--legendary-bg);
+  color: var(--legendary-text);
+}
+
+.modal-sel-grade-badge.grade-unique {
+  background: var(--unique-bg);
+  color: var(--unique-text);
+}
+
+.modal-sel-grade-badge.grade-epic {
+  background: var(--epic-bg);
+  color: var(--epic-text);
+}
+
+.modal-sel-grade-badge.grade-rare {
+  background: var(--rare-bg);
+  color: var(--rare-text);
+}
+
+.modal-sel-range {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.modal-select-btn .cs-arrow {
+  margin-left: 0;
+}
+
+/* 展開ドロップダウン */
+.modal-select-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 250;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.modal-select-dropdown.open {
+  display: block;
+}
+
+.modal-cs-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-main);
+  text-align: left;
+  transition: background 0.15s;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.modal-cs-option:last-child {
+  border-bottom: none;
+}
+
+.modal-cs-option:hover {
+  background: var(--accent-dim);
+}
+
+.modal-cs-option.active {
+  background: var(--accent-dim);
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+/* 3. 確率表示切り替え（1行） */
+.modal-toggle-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-toggle-wrap-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 4. モダルボディ（数値確率表） */
+.modal-body-wrap {
+  overflow-y: auto;
+  padding: 16px 20px 20px;
+  flex: 1;
+}
+
+.modal-body {
+  margin-top: 8px;
+}
+
+/* Modal Table */
+.modal-table-wrap {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  table-layout: fixed;
+}
+
+.modal-table thead tr {
+  background: var(--accent);
+  color: #fff;
+}
+
+.modal-table thead th {
+  padding: 7px 10px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  white-space: nowrap;
+}
+
+.modal-table thead th:last-child {
+  border-right: none;
+}
+
+.modal-table thead th span {
+  display: block;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.modal-table tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background 0.12s;
+}
+
+.modal-table tbody tr:nth-child(even) {
+  background: var(--bg-row-alt);
+}
+
+.modal-table tbody tr:hover {
+  background: #fff5f5;
+}
+
+.modal-table tbody td {
+  padding: 6px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+
+  &>span {
+    display: inline-block;
+  }
+}
+
+.modal-table tbody td:last-child {
+  border-right: none;
+}
+
+/* ===================================
+   Scroll Buttons
+   =================================== */
+.scroll-buttons {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 150;
+}
+
+.scroll-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(26, 26, 46, 0.48);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ===================================
+   Misc
+   =================================== */
+.text-na {
+  color: var(--text-muted);
+}
+
+.text-bold {
+  font-weight: 700;
+}
