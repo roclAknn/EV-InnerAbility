@@ -136,7 +136,7 @@ input[type="number"] {
 
 .summary-title-row {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   gap: 8px;
   flex-wrap: wrap;
 }
@@ -537,6 +537,14 @@ input[type="number"] {
 /* ===================================
    List Header (sticky)
    =================================== */
+.list-title {
+  padding: 18px 20px 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .list-header {
   display: grid;
   grid-template-columns: var(--list-grid-template);
@@ -1045,10 +1053,27 @@ input[type="number"] {
   margin-top: 8px;
 }
 
+.modal-table-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-table-title {
+  zoom: 0.9;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+  align-items: flex-end;
+  gap: 0px 8px;
+}
+
 /* Modal Table */
 .modal-table-wrap {
   border-radius: var(--radius-sm);
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid var(--border-light);
 }
 
@@ -1056,7 +1081,7 @@ input[type="number"] {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .modal-table thead tr {
@@ -1065,6 +1090,7 @@ input[type="number"] {
 }
 
 .modal-table thead th {
+  min-width: max-content;
   padding: 7px 10px;
   text-align: center;
   font-size: 0.8rem;

@@ -38,7 +38,7 @@
         <div class="summary-block" id="optionGradeProbBlock">
           <div class="summary-title-row">
             <h2 class="summary-title">2, 3行目オプション等級確率</h2>
-            <span class="summary-sub">(1行目はベース等級確定)</span>
+            <span class="summary-sub">1行目はベース等級確定</span>
           </div>
           <div class="summary-table-wrap" id="optionGradeProbTableWrap">
             <!-- JSで自動生成 -->
@@ -48,6 +48,10 @@
 
       <!-- ===== インナーアビリティリスト コンテナ ===== -->
       <section class="ia-container" id="iaContainer">
+        <div class="list-title">
+          <h2 class="summary-title">オプション確率一覧</h2>
+          <span class="summary-sub">確率は1行あたりの純粋な確率で、昇級や重複などを無視した場合</span>
+        </div>
 
         <!-- スティッキーコントロールバー -->
         <div class="sticky-bar" id="stickyBar">
@@ -170,8 +174,12 @@
       </div><!-- /.modal-header -->
 
       <div class="modal-body-wrap">
-        <!-- 表示切り替え -->
-        <div class="modal-toggle-wrap modal-toggle-line" style="justify-content: flex-end;">
+        <div class="modal-table-title-wrap">
+          <div class="modal-table-title">
+            <h2 class="summary-title">オプション数値ごと確率表</h2>
+            <span class="summary-sub">()は数値以上になる確率</span>
+          </div>
+          <!-- 表示切り替え -->
           <div class="toggle-wrap">
             <div class="param-input-wrap" id="modalParamNWrap">
               <input type="number" id="modalParamN" class="param-input" value="1" min="1" step="1">
