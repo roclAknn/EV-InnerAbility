@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>インナーアビリティ確率表 | めいぽ電卓</title>
+  <title>インナーアビリティ計算器 | めいぽ電卓</title>
   <meta name="description" content="メイプルストーリーのインナーアビリティの確率表を表示。期待値などを計算できるシミュレータ・ツールです。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,125 @@
   <!-- ===== ページ本体 ===== -->
   <main>
     <div id="maindiv-wrapper">
+      <!-- ===== 確率計算器 コンテナ ===== -->
+      <section class="calc-container" id="probCalculatorContainer">
+        <!-- ヘッダー -->
+        <div class="calc-header">
+          <div class="calc-header-main">
+            <div class="calc-title-row">
+              <h2 class="summary-title">確率を計算する</h2>
+              <div class="calc-base-badge">
+                <span>ベース等級：</span>
+                <img class="cs-icon" src="icon/rank-legendary.png" alt="L">
+                <span>レジェンダリー固定</span>
+              </div>
+            </div>
+            <span class="summary-sub">アビリティのリセットで、選択オプションのどれかがつく確率を計算します</span>
+          </div>
+        </div>
+
+        <!-- 計算器ボディ（左：対象行、右：オプション一覧） -->
+        <div class="calc-body">
+          <!-- 左ペイン：対象行選択 -->
+          <div class="calc-target-pane">
+            <div class="calc-pane-heading">
+              <span class="calc-pane-title">対象行 選択</span>
+            </div>
+            <div class="calc-row-btn-group" id="calcRowBtnGroup">
+              <button type="button" class="calc-row-btn active" data-row="1" title="1行目をクリックしてオン/オフ">
+                <div class="calc-row-btn-indicator">✔</div>
+                <div class="calc-row-btn-info">
+                  <span class="calc-row-btn-title">1行目</span>
+                  <span class="calc-row-btn-sub">レジェ</span>
+                </div>
+              </button>
+              <button type="button" class="calc-row-btn active" data-row="2" title="2行目をクリックしてオン/オフ">
+                <div class="calc-row-btn-indicator">✔</div>
+                <div class="calc-row-btn-info">
+                  <span class="calc-row-btn-title">2行目</span>
+                  <span class="calc-row-btn-sub">(レジェ) / ユニ / エピ</span>
+                </div>
+              </button>
+              <button type="button" class="calc-row-btn active" data-row="3" title="3行目をクリックしてオン/オフ">
+                <div class="calc-row-btn-indicator">✔</div>
+                <div class="calc-row-btn-info">
+                  <span class="calc-row-btn-title">3行目</span>
+                  <span class="calc-row-btn-sub">(レジェ) / ユニ / エピ</span>
+                </div>
+              </button>
+            </div>
+            <div class="calc-row-actions" style="display: none;">
+              <button type="button" class="calc-mini-btn" id="calcSelectAllRows">全行</button>
+              <button type="button" class="calc-mini-btn" id="calcSelectRow1">1行目のみ</button>
+              <button type="button" class="calc-mini-btn" id="calcSelectRows23">2,3行目</button>
+            </div>
+          </div>
+
+          <!-- 右ペイン：対象オプションリスト -->
+          <div class="calc-options-pane">
+            <div class="calc-pane-heading">
+              <span class="calc-pane-title">
+                <span>オプション候補 選択</span>
+                <span class="calc-options-count" id="calcOptionsCount">(0 / 0)</span>
+              </span>
+              <div class="calc-options-tools">
+                <button type="button" class="calc-mini-btn" id="calcClearOptions">全解除</button>
+              </div>
+            </div>
+            <div class="calc-options-scroll" id="calcOptionsList">
+              <!-- JSで動的生成 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- フッター：計算結果 -->
+        <div class="calc-footer">
+          <div class="calc-result-card" id="calcResultNormalCard">
+            <div class="calc-result-header">
+              <span class="calc-result-tag">通常リセット</span>
+            </div>
+            <div class="calc-result-body">
+              <div class="calc-result-col">
+                <span class="calc-result-label">確率</span>
+                <span class="calc-result-val" id="calcProbNormal">0.0000 %</span>
+              </div>
+              <div class="calc-result-sep"></div>
+              <div class="calc-result-col">
+                <span class="calc-result-label">中央値</span>
+                <span class="calc-result-val" id="calcMedianNormal">— 回</span>
+              </div>
+              <div class="calc-result-sep"></div>
+              <div class="calc-result-col">
+                <span class="calc-result-label">平均値</span>
+                <span class="calc-result-val" id="calcExpNormal">— 回</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-result-card advance" id="calcResultAdvanceCard">
+            <div class="calc-result-header">
+              <span class="calc-result-tag advance">アドバンスリセット</span>
+            </div>
+            <div class="calc-result-body">
+              <div class="calc-result-col">
+                <span class="calc-result-label">確率</span>
+                <span class="calc-result-val" id="calcProbAdvance">0.0000 %</span>
+              </div>
+              <div class="calc-result-sep"></div>
+              <div class="calc-result-col">
+                <span class="calc-result-label">中央値</span>
+                <span class="calc-result-val" id="calcMedianAdvance">— 回</span>
+              </div>
+              <div class="calc-result-sep"></div>
+              <div class="calc-result-col">
+                <span class="calc-result-label">平均値</span>
+                <span class="calc-result-val" id="calcExpAdvance">— 回</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ===== 基礎確率情報 コンテナ ===== -->
       <section class=" summary-container" id="probSummaryContainer">
         <!-- 昇級確率(%)の表 -->

@@ -1059,6 +1059,345 @@ function init() {
   document.getElementById('scrollBottomBtn').addEventListener('click', () => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   });
+
+  // 確率計算器の初期化
+  initCalculator();
+}
+
+// ===================================
+// 確率計算器 (Calculator) ロジック
+// ===================================
+
+/**
+ * あるオプションの出現候補数値を等級順（レア→エピック→ユニーク→レジェンダリー、配列順）に平坦化
+ */
+function getCalcAbilityFlatCandidates(ability) {
+  const result = [];
+  for (let grdidx = 0; grdidx < ABILITY_DATA['等級'].length; grdidx++) {
+    if (grdidx < 1) continue; // エピ等級以上
+    const grade = ABILITY_DATA['等級'][grdidx];
+    const list = ability.等級別候補[grade] || [];
+    for (const item of list) {
+      result.push({
+        grade,
+        val: item.数値,
+        probInGrade: item.確率,
+      });
+    }
+  }
+  return result;
+}
+
+function formatCalcOptionValue(ability, val) {
+  if (ability.isPercentage) return `+${val}%`;
+  if (ability.置換名 && ability.置換名.includes('+$1')) return `+${val}`;
+  if (ability.置換名 && ability.置換名.includes('$1%')) return `${val}%`;
+  return `+${val}`;
+}
+
+function formatCalcOptionLabel(ability, candidate, suffix) {
+  const gradeshort = ABILITY_DATA['等級短縮'][
+    ABILITY_DATA['等級'].indexOf(candidate.grade)
+  ];
+  const valText = formatCalcOptionValue(ability, candidate.val);
+  return `${valText}${suffix} (${gradeshort})`;
+}
+
+/**
+ * ある行 (rowIndex: 1, 2, 3) において、
+ * 指定オプションが targetIndex 以上の数値で出現する確率を計算
+ */
+function calcOptionHitProbOnRow(ability, targetIndex, rowIndex, isAdvance) {
+  const flat = getCalcAbilityFlatCandidates(ability);
+  const gradeMatchProb = { 'レア': 0, 'エピック': 0, 'ユニーク': 0, 'レジェンダリー': 0 };
+
+  for (let i = targetIndex; i < flat.length; i++) {
+    const item = flat[i];
+    gradeMatchProb[item.grade] += item.probInGrade;
+  }
+
+  if (rowIndex === 1) {
+    // 1行目はベース等級「レジェンダリー」確定
+    const pAppear = ability.等級別確率['レジェンダリー'] || 0;
+    return pAppear * gradeMatchProb['レジェンダリー'];
+  } else {
+    // 2行目・3行目
+    const gradeProbDist = isAdvance
+      ? ABILITY_DATA['アドバンスオプション等級確率'][3] // [レア, エピック, ユニーク, レジェンダリー]
+      : ABILITY_DATA['オプション等級確率'][3];
+    let totalProb = 0;
+    ABILITY_DATA['等級'].forEach((grade, gi) => {
+      const pGrade = gradeProbDist[gi] || 0;
+      if (pGrade <= 0) return;
+      const pAppear = ability.等級別確率[grade] || 0;
+      if (pAppear <= 0) return;
+      totalProb += pGrade * pAppear * gradeMatchProb[grade];
+    });
+    return totalProb;
+  }
+}
+
+/**
+ * 指定された行とチェックされたオプション群から全体の当選確率・回数期待値を算出
+ */
+function calcTotalProbability(selectedRows, checkedOptions, isAdvance) {
+  if (selectedRows.length === 0 || checkedOptions.length === 0) {
+    return { prob: 0, expected: null };
+  }
+
+  let notHitProd = D(1);
+
+  for (const rowIndex of selectedRows) {
+    let pRow = D(0);
+    for (const opt of checkedOptions) {
+      const ability = ABILITY_LIST[opt.abilityId];
+      if (!ability) continue;
+      const pHit = calcOptionHitProbOnRow(ability, opt.targetIndex, rowIndex, isAdvance);
+      pRow = pRow.plus(D(pHit));
+    }
+    if (pRow.gt(1)) pRow = D(1);
+    notHitProd = notHitProd.times(D(1).minus(pRow));
+  }
+
+  const totalProb = D(1).minus(notHitProd).toNumber();
+  const expected = totalProb > 0 ? D(1).div(D(totalProb)).toNumber() : null;
+  const median = D(2).ln().times(-1).times(D(1).div(D(1).minus(totalProb).ln()));
+  return { prob: totalProb, expected, median };
+}
+
+function formatProbDisplay(prob) {
+  if (!prob || prob <= 0) return '0.0000 %';
+  const pct = D(prob).times(100);
+  let formatted = pct.toFixed(4);
+  if (pct.gt(0) && formatted === '0.0000') {
+    formatted = pct.toPrecision(3);
+  }
+  const parts = formatted.split('.');
+  if (parts.length > 1) {
+    return `<span class="int decint">${parts[0]}</span><span class="dec">.${parts[1]}</span> %`;
+  }
+  return `<span class="int">${parts[0]}</span> %`;
+}
+
+function formatExpectedDisplay(exp) {
+  if (exp === null || exp === undefined || !isFinite(exp) || exp <= 0) return '— 回';
+  if (exp >= 100) {
+    const rounded = Math.round(exp);
+    return `<span class="int marked">${rounded.toLocaleString()}</span> 回`;
+  } else {
+    const formatted = D(exp).toFixed(1);
+    const parts = formatted.split('.');
+    return `<span class="int decint marked">${parts[0]}</span><span class="dec">.${parts[1]}</span> 回`;
+  }
+}
+
+function formatMedianDisplay(median) {
+  if (median === null || median === undefined || !isFinite(median) || median <= 0) return '— 回';
+  if (median >= 100) {
+    const rounded = Math.round(median);
+    return `<span class="int marked">${rounded.toLocaleString()}</span> 回`;
+  } else {
+    const formatted = D(median).toFixed(1);
+    const parts = formatted.split('.');
+    return `<span class="int decint marked">${parts[0]}</span><span class="dec">.${parts[1]}</span> 回`;
+  }
+}
+
+/**
+ * 確率計算器の計算実行と表示更新
+ */
+function updateCalculator() {
+  const selectedRows = [];
+  document.querySelectorAll('.calc-row-btn.active').forEach(btn => {
+    selectedRows.push(Number(btn.dataset.row));
+  });
+
+  const checkedOptions = [];
+  let totalOptions = 0;
+  document.querySelectorAll('.calc-opt-row').forEach(rowEl => {
+    totalOptions++;
+    const chk = rowEl.querySelector('.calc-opt-checkbox');
+    if (chk && chk.checked) {
+      const abilityId = Number(rowEl.dataset.abilityId);
+      const select = rowEl.querySelector('.calc-opt-select');
+      const targetIndex = select ? Number(select.value) : 0;
+      checkedOptions.push({ abilityId, targetIndex });
+    }
+  });
+
+  document.getElementById('calcOptionsCount').textContent = `(${checkedOptions.length} / ${totalOptions})`;
+
+  const resNormal = calcTotalProbability(selectedRows, checkedOptions, false);
+  const resAdvance = calcTotalProbability(selectedRows, checkedOptions, true);
+
+  const probNormalEl = document.getElementById('calcProbNormal');
+  const expNormalEl = document.getElementById('calcExpNormal');
+  const medianNormalEl = document.getElementById('calcMedianNormal');
+  const probAdvanceEl = document.getElementById('calcProbAdvance');
+  const expAdvanceEl = document.getElementById('calcExpAdvance');
+  const medianAdvanceEl = document.getElementById('calcMedianAdvance');
+
+  if (probNormalEl) probNormalEl.innerHTML = formatProbDisplay(resNormal.prob);
+  if (expNormalEl) expNormalEl.innerHTML = formatExpectedDisplay(resNormal.expected);
+  if (medianNormalEl) medianNormalEl.innerHTML = formatMedianDisplay(resNormal.median);
+  if (probAdvanceEl) probAdvanceEl.innerHTML = formatProbDisplay(resAdvance.prob);
+  if (expAdvanceEl) expAdvanceEl.innerHTML = formatExpectedDisplay(resAdvance.expected);
+  if (medianAdvanceEl) medianAdvanceEl.innerHTML = formatMedianDisplay(resAdvance.median);
+
+}
+
+/**
+ * 確率計算器の初期化
+ */
+function initCalculator() {
+  const optionsListEl = document.getElementById('calcOptionsList');
+  if (!optionsListEl) return;
+
+  // 有効オプション一覧（isUsefulかつid!=0）を取得
+  const usefulAbilities = Object.values(ABILITY_LIST).filter(a => a.isUseful && a.id !== 0);
+
+  optionsListEl.innerHTML = '';
+
+  usefulAbilities.forEach(ability => {
+    const flatCandidates = getCalcAbilityFlatCandidates(ability);
+    if (flatCandidates.length === 0) return;
+
+    const rowEl = document.createElement('div');
+    rowEl.className = 'calc-opt-row is-off';
+    rowEl.dataset.abilityId = ability.id;
+
+    // 左：チェックボックス＋名前ラベル
+    const labelEl = document.createElement('label');
+    labelEl.className = 'calc-opt-check-label';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'calc-opt-checkbox';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'calc-opt-name';
+    nameSpan.textContent = ability.名前;
+    nameSpan.title = ability.名前;
+
+    labelEl.appendChild(checkbox);
+    labelEl.appendChild(nameSpan);
+
+    // 右：目標数値SELECT
+    const selectWrap = document.createElement('div');
+    selectWrap.className = 'calc-opt-select-wrap';
+
+    const select = document.createElement('select');
+    select.className = 'calc-opt-select';
+    select.title = `${ability.名前}の目標数値`;
+
+    const hasMultiple = flatCandidates.length > 1;
+    const optList = [];
+    flatCandidates.forEach((cand, idx) => {
+      const isMaxValue = idx === flatCandidates.length - 1;
+      const suffix = !hasMultiple ? "" : isMaxValue ? " MAX" : " 以上";
+      const optEl = document.createElement('option');
+      optEl.value = idx;
+      optEl.textContent = formatCalcOptionLabel(ability, cand, suffix);
+      if (idx === 0) optEl.selected = true;
+      optList.push(optEl);
+    });
+    optList.reverse().forEach(opt => select.appendChild(opt));
+
+    selectWrap.appendChild(select);
+    rowEl.appendChild(labelEl);
+    rowEl.appendChild(selectWrap);
+
+    // チェック状態変更イベント
+    checkbox.addEventListener('change', () => {
+      rowEl.classList.toggle('is-off', !checkbox.checked);
+      updateCalculator();
+    });
+
+    // 行クリックでチェックをトグル（SELECT操作時などを除く）
+    rowEl.addEventListener('click', e => {
+      if (e.target === select || e.target.tagName === 'OPTION' || e.target === checkbox) return;
+      checkbox.checked = !checkbox.checked;
+      rowEl.classList.toggle('is-off', !checkbox.checked);
+      updateCalculator();
+    });
+
+    // SELECT変更時：チェックが外れていれば自動でチェック
+    select.addEventListener('change', () => {
+      if (!checkbox.checked) {
+        checkbox.checked = true;
+        rowEl.classList.remove('is-off');
+      }
+      updateCalculator();
+    });
+
+    optionsListEl.appendChild(rowEl);
+  });
+
+  // 対象行ボタンのトグルイベント
+  document.querySelectorAll('.calc-row-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      const ind = btn.querySelector('.calc-row-btn-indicator');
+      if (ind) ind.textContent = btn.classList.contains('active') ? '✔' : '';
+      updateCalculator();
+    });
+  });
+
+  const setRowActive = (r, active) => {
+    const btn = document.querySelector(`.calc-row-btn[data-row="${r}"]`);
+    if (!btn) return;
+    btn.classList.toggle('active', active);
+    const ind = btn.querySelector('.calc-row-btn-indicator');
+    if (ind) ind.textContent = active ? '✔' : '';
+  };
+
+  // クイックボタン：全行
+  const allRowsBtn = document.getElementById('calcSelectAllRows');
+  if (allRowsBtn) {
+    allRowsBtn.addEventListener('click', () => {
+      [1, 2, 3].forEach(r => setRowActive(r, true));
+      updateCalculator();
+    });
+  }
+
+  // クイックボタン：2,3行目
+  const rows23Btn = document.getElementById('calcSelectRows23');
+  if (rows23Btn) {
+    rows23Btn.addEventListener('click', () => {
+      setRowActive(1, false);
+      setRowActive(2, true);
+      setRowActive(3, true);
+      updateCalculator();
+    });
+  }
+
+  // クイックボタン：1行目のみ
+  const row1Btn = document.getElementById('calcSelectRow1');
+  if (row1Btn) {
+    row1Btn.addEventListener('click', () => {
+      setRowActive(1, true);
+      setRowActive(2, false);
+      setRowActive(3, false);
+      updateCalculator();
+    });
+  }
+
+  // オプション全解除ボタン
+  const clearOptionsBtn = document.getElementById('calcClearOptions');
+  if (clearOptionsBtn) {
+    clearOptionsBtn.addEventListener('click', () => {
+      document.querySelectorAll('.calc-opt-row').forEach(rowEl => {
+        const chk = rowEl.querySelector('.calc-opt-checkbox');
+        if (chk) chk.checked = false;
+        rowEl.classList.add('is-off');
+      });
+      updateCalculator();
+    });
+  }
+
+  // 初期計算
+  updateCalculator();
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
